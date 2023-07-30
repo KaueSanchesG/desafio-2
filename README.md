@@ -8,7 +8,7 @@
  
 Este projeto faz parte de um dos desafios passados em sala no dia 27/07/2023.
 
-</br>
+<br>
 
 ## O Desafio ☠
 
