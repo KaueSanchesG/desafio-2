@@ -48,7 +48,7 @@ public class Func {
                 }
             }
             case 2 -> {
-                if (clienteList.size() != 0) {
+                if (!clienteList.isEmpty()) {
                     String nome;
                     System.out.println("Digite o nome do cliente a procurar:");
                     nome = sc.next();
@@ -69,7 +69,20 @@ public class Func {
                 }
             }
             case 3 -> {
-                System.out.println("Aqui edita cliente");
+                if (!clienteList.isEmpty()) {
+                    System.out.println("Digite o nome do cliente a editar");
+                    String nome = sc.next();
+                    for (int i = 0; i < clienteList.size(); i++)
+                        if (nome.equals(clienteList.get(i).getNome())) {
+                            System.out.println("Digite o que quer alterar");
+                            System.out.println("1 - Nome do cliente\n2 - Endereço do cliente");
+                            int opc2 = sc.nextInt();
+                            if (opc2 == 1) {
+                                System.out.println("Digite o novo nome:");
+                                clienteList.get(i).setNome(sc.next());
+                            }
+                        }
+                }
             }
         }
         return clienteList;
