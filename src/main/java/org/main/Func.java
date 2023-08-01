@@ -7,13 +7,13 @@ import java.util.Scanner;
 public class Func {
     static Scanner sc = new Scanner(System.in);
 
-    public static int menu(List<Cliente> clienteList) {
+    public static int menu(List<Cliente> clienteList, List<Pedido> pedidos) {
         int opc;
         System.out.println("Bem-vindo ao sistema de vendas, digite uma das opções abaixo:");
-        System.out.print("1 - Realizar pedido\n2 - Cliente\n3 - Sair\n");
+        System.out.print("1 - Pedidos\n2 - Cliente\n3 - Sair\n");
         opc = sc.nextInt();
         if (opc == 1) {
-            System.out.println("Aqui realiza pedidos");
+            menuPedido(clienteList, pedidos);
         }
         if (opc == 2) {
             menuCliente(clienteList);
@@ -21,7 +21,7 @@ public class Func {
         return opc;
     }
 
-    public static List<Cliente> menuCliente(List<Cliente> clienteList) {
+    public static void menuCliente(List<Cliente> clienteList) {
         int opc;
         System.out.println("<---------- Cliente ---------->");
         System.out.print("1 - Cadastrar \n2 - Procurar \n3 - Editar\n");
@@ -62,6 +62,7 @@ public class Func {
                             }
                         } else {
                             System.out.println("Esse cliente não existe...");
+                            break;
                         }
                     }
                 } else {
@@ -94,19 +95,72 @@ public class Func {
                                 clienteList.get(i).getEndereco().get(novoEnd - 1).setRua(rua);
                                 clienteList.get(i).getEndereco().get(novoEnd - 1).setNumero(numero);
                             }
+                        } else {
+                            System.out.println("Esse nome não está registrado...");
                         }
                     }
                 }
             }
         }
-        return clienteList;
     }
 
-    public static List<Pedido> menuPedido(List<Pedido> pedidos) {
-        System.out.println("<---------- Pedido ---------->");
+    public static void menuPedido(List<Cliente> clienteList, List<Pedido> pedidos) {
+        System.out.println("<---------- Pedidos ---------->");
         System.out.println("Digite uma das opções \n1 - Realizar pedido \n2 - Visualizar pedidos");
         int opc = sc.nextInt();
-//        if ()
-        return pedidos;
+
+        if (opc == 1) {
+            System.out.println("Digite o nome do cliente a fazer o pedido:");
+            String nomeCliente = sc.next();
+
+            Cliente clienteSelecionado = null;
+            for (Cliente cliente : clienteList) {
+                if (cliente.getNome().equals(nomeCliente)) {
+                    clienteSelecionado = cliente;
+                    break;
+                }
+            }
+
+            if (clienteSelecionado != null) {
+                System.out.println("Qual a quantidade de produtos a serem adicionados?");
+                int qntd = sc.nextInt();
+                List<Produto> produtoList = new ArrayList<>();
+                for (int i = 0; i < qntd; i++) {
+                    System.out.println("Digite o nome do " + (i + 1) + "° produto:");
+                    String nome = sc.nextLine();
+                    System.out.println("Digite a quantidade do " + (i + 1) + "° produto:");
+                    int qntdProd = sc.nextInt();
+                    System.out.println("O preço do " + (i + 1) + "° produto:");
+                    double preco = sc.nextDouble();
+                    produtoList.add(new Produto(nome, qntdProd, preco));
+                }
+
+                System.out.println("O pedido foi finalizado?\n\t1 para sim\n\t2 para não\n");
+                boolean finalizado = sc.nextInt() == 1 ? true : false;
+                pedidos.add(new Pedido(produtoList, clienteSelecionado, finalizado));
+            } else {
+                System.out.println("Esse cliente não existe...");
+            }
+        } else if (opc == 2) {
+            visualizarPedidos(pedidos);
+        }
+    }
+
+
+    public static void visualizarPedidos(List<Pedido> pedidos) {
+        if (pedidos.isEmpty()) {
+            System.out.println("<--------------- Sem pedidos ainda --------------->");
+        } else {
+            System.out.println("<--------------- Pedidos totais --------------->");
+            for (Pedido pedido : pedidos) {
+                System.out.println("Nome do cliente: " + pedido.getCliente().getNome());
+                System.out.println("Pedido finalizado: " + (pedido.isFinalizado() ? "Sim" : "Não"));
+                System.out.println("Produtos:");
+                for (Produto produto : pedido.getProduto()) {
+                    System.out.println("- Nome: " + produto.getNome() + ", Quantidade: " + produto.getQuantidade() + ", Preço: " + produto.getPreco());
+                }
+                System.out.println("-----------------------------------------");
+            }
+        }
     }
 }
