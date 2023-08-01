@@ -7,12 +7,14 @@ public class Pedido {
     private int quantidade;
     private double preco;
     private Cliente cliente;
+    private boolean finalizado;
 
-    public Pedido(String produto, int quantidade, double preco, List<Cliente> clienteList) {
+    public Pedido(String produto, int quantidade, double preco, Cliente cliente, boolean finalizado) {
         this.produto = produto;
         this.quantidade = quantidade;
         this.preco = preco;
         this.cliente = cliente;
+        this.finalizado = finalizado;
     }
 
     public String getProduto() {
@@ -39,11 +41,19 @@ public class Pedido {
         this.preco = preco;
     }
 
-    public Cliente cliente() {
+    public Cliente getCliente() {
         return cliente;
     }
 
-    public void setClienteList(List<Cliente> clienteList) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public boolean isFinalizado() {
+        return finalizado;
+    }
+
+    public void setFinalizado(boolean finalizado) {
+        this.finalizado = finalizado;
     }
 }
