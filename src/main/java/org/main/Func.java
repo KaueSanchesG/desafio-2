@@ -37,7 +37,7 @@ public class Func {
                     int j = sc.nextInt();
                     List<Endereco> enderecoList = new ArrayList<>();
                     for (int contaEnd = 0; contaEnd < j; contaEnd++) {
-                        System.out.println("Endereço " + (j + 1));
+                        System.out.println("Endereço " + (contaEnd + 1));
                         System.out.println("Digite a rua:");
                         String rua = sc.next();
                         System.out.println("Agora, o numero da casa:");
@@ -72,7 +72,7 @@ public class Func {
                 if (!clienteList.isEmpty()) {
                     System.out.println("Digite o nome do cliente a editar");
                     String nome = sc.next();
-                    for (int i = 0; i < clienteList.size(); i++)
+                    for (int i = 0; i < clienteList.size(); i++) {
                         if (nome.equals(clienteList.get(i).getNome())) {
                             System.out.println("Digite o que quer alterar");
                             System.out.println("1 - Nome do cliente\n2 - Endereço do cliente");
@@ -81,10 +81,32 @@ public class Func {
                                 System.out.println("Digite o novo nome:");
                                 clienteList.get(i).setNome(sc.next());
                             }
+                            if (opc2 == 2) {
+                                for (int conteEnd = 0; conteEnd < clienteList.get(i).getEndereco().size(); conteEnd++) {
+                                    System.out.println((conteEnd + 1) + "° - Rua " + clienteList.get(i).getEndereco().get(conteEnd).getRua() + ", " + clienteList.get(i).getEndereco().get(conteEnd).getNumero());
+                                }
+                                System.out.println("Digite o numero do endereço a ser editado:");
+                                int novoEnd = sc.nextInt();
+                                System.out.println("Digite a nova rua:");
+                                String rua = sc.next();
+                                System.out.println("Digite o novo numero:");
+                                int numero = sc.nextInt();
+                                clienteList.get(i).getEndereco().get(novoEnd - 1).setRua(rua);
+                                clienteList.get(i).getEndereco().get(novoEnd - 1).setNumero(numero);
+                            }
                         }
+                    }
                 }
             }
         }
         return clienteList;
+    }
+
+    public static List<Pedido> menuPedido(List<Pedido> pedidos) {
+        System.out.println("<---------- Pedido ---------->");
+        System.out.println("Digite uma das opções \n1 - Realizar pedido \n2 - Visualizar pedidos");
+        int opc = sc.nextInt();
+//        if ()
+        return pedidos;
     }
 }
