@@ -130,6 +130,7 @@ public class Func {
             if (clienteSelecionado != null) {
                 System.out.println("Qual a quantidade de produtos a serem adicionados?");
                 int qntd = sc.nextInt();
+                double valorTotal = 0;
                 List<Produto> produtoList = new ArrayList<>();
                 for (int i = 0; i < qntd; i++) {
                     System.out.println("Digite o nome do " + (i + 1) + "° produto:");
@@ -138,11 +139,18 @@ public class Func {
                     int qntdProd = sc.nextInt();
                     System.out.println("O preço do " + (i + 1) + "° produto:");
                     double preco = sc.nextDouble();
-                    produtoList.add(new Produto(nome, qntdProd, preco));
+                    double totalProduto = qntdProd * preco;
+                    valorTotal += totalProduto;
+                    produtoList.add(new Produto(nome, qntdProd, preco, totalProduto));
                 }
                 System.out.println("O pedido foi finalizado?\n\t1 para sim\n\t2 para não\n");
                 boolean finalizado = sc.nextInt() == 1 ? true : false;
-                pedidos.add(new Pedido(produtoList, clienteSelecionado, finalizado));
+                pedidos.add(new Pedido(produtoList, clienteSelecionado, finalizado, valorTotal));
+                if (finalizado) {
+                    for (Pedido pedido : pedidos) {
+                        Func.reciboTxt(pedido);
+                    }
+                }
             }
         } else if (opc == 2) {
             visualizarPedidos(pedidos);
@@ -159,9 +167,13 @@ public class Func {
                 System.out.println("Pedido finalizado: " + (pedido.isFinalizado() ? "Sim" : "Não"));
                 System.out.println("Produtos:");
                 for (Produto produto : pedido.getProduto()) {
-                    System.out.println("- Nome: " + produto.getNome() + "\n Quantidade: " + produto.getQuantidade() + "\n Preço: " + produto.getPreco());
+                    System.out.println("- Nome do produto: " + produto.getNome() +
+                            "\n Quantidade: " + produto.getQuantidade() +
+                            "\n Preço: " + produto.getPreco() +
+                            "\n Total do produto: " + produto.getTotalProduto());
                     System.out.println("========================");
                 }
+                System.out.println("\n Total do pedido: " + pedido.getValorTotal());
                 System.out.println("-----------------------------------------");
             }
         }
@@ -184,22 +196,29 @@ public class Func {
             try {
                 String nomeArq = "recibo_" + pedido.getCliente().getNome() + ".txt";
                 FileWriter escreveArq = new FileWriter(nomeArq);
+                LocalDateTime dataHoraAtual = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                String dataHoraFormatada = dataHoraAtual.format(formatter);
                 escreveArq.write("\t\t================\n");
                 escreveArq.write("\t\tRecibo do Pedido\n");
-                escreveArq.write("\t\t================\n");
+                escreveArq.write("\t\t================\n\n");
                 escreveArq.write("Nome do Cliente: " + pedido.getCliente().getNome() + "\n");
                 escreveArq.write("Endereços:\n");
                 for (Endereco endereco : pedido.getCliente().getEndereco()) {
                     escreveArq.write("- Rua: " + endereco.getRua() + ", Número: " + endereco.getNumero() + "\n");
                 }
-                LocalDateTime dataHoraAtual = LocalDateTime.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-                String dataHoraFormatada = dataHoraAtual.format(formatter);
-                escreveArq.write("Pedido finalizado no dia/horario: " + dataHoraFormatada + "\n");
-                escreveArq.write("Produtos:\n");
+                escreveArq.write("\nProdutos:\n");
                 for (Produto produto : pedido.getProduto()) {
-                    escreveArq.write("\n- Nome: " + produto.getNome() + ", Quantidade: " + produto.getQuantidade() + ", Preço: " + produto.getPreco() + "\n");
+                    escreveArq.write("\n- Nome do produto: " + produto.getNome() +
+                            "\n Quantidade: " + produto.getQuantidade() +
+                            "\n Preço: " + produto.getPreco() +
+                            "\n Total do produto: " + produto.getTotalProduto() +
+                            "\n ========================\n");
                 }
+                escreveArq.write("\n-------------------------------------------------");
+                escreveArq.write("\nValor total: " + pedido.getValorTotal());
+                escreveArq.write("\nPedido finalizado em: " + dataHoraFormatada);
+
                 escreveArq.close();
                 System.out.println("Recibo gerado com sucesso!");
             } catch (IOException e) {
