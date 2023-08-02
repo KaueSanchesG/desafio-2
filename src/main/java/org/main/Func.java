@@ -17,6 +17,7 @@ public class Func {
         System.out.print("1 - Pedidos\n2 - Cliente\n3 - Sair\n");
         opc = sc.nextInt();
         if (opc == 1) {
+            statusPedidos(pedidos);
             menuPedido(clienteList, pedidos);
         }
         if (opc == 2) {
@@ -114,11 +115,9 @@ public class Func {
         System.out.println("<---------- Pedidos ---------->");
         System.out.println("Digite uma das opções \n1 - Realizar pedido \n2 - Visualizar pedidos");
         int opc = sc.nextInt();
-
         if (opc == 1) {
             System.out.println("Digite o nome do cliente a fazer o pedido:");
             String nomeCliente = sc.next();
-
             Cliente clienteSelecionado = null;
             for (Cliente cliente : clienteList) {
                 if (cliente.getNome().equals(nomeCliente)) {
@@ -128,7 +127,6 @@ public class Func {
                     System.out.println("Esse cliente não existe...");
                 }
             }
-
             if (clienteSelecionado != null) {
                 System.out.println("Qual a quantidade de produtos a serem adicionados?");
                 int qntd = sc.nextInt();
@@ -142,7 +140,6 @@ public class Func {
                     double preco = sc.nextDouble();
                     produtoList.add(new Produto(nome, qntdProd, preco));
                 }
-
                 System.out.println("O pedido foi finalizado?\n\t1 para sim\n\t2 para não\n");
                 boolean finalizado = sc.nextInt() == 1 ? true : false;
                 pedidos.add(new Pedido(produtoList, clienteSelecionado, finalizado));
@@ -163,9 +160,22 @@ public class Func {
                 System.out.println("Produtos:");
                 for (Produto produto : pedido.getProduto()) {
                     System.out.println("- Nome: " + produto.getNome() + "\n Quantidade: " + produto.getQuantidade() + "\n Preço: " + produto.getPreco());
+                    System.out.println("========================");
                 }
                 System.out.println("-----------------------------------------");
             }
+        }
+    }
+
+    private static void statusPedidos(List<Pedido> pedidos) {
+        System.out.println("\t\t==============");
+        System.out.println("\t\t\tStatus");
+        System.out.println("\t\t==============\n");
+        System.out.println("Pedidos totais: " + (pedidos.size() == 0 ? "Ainda não há pedidos\n" : pedidos.size()));
+        for (Pedido pedido : pedidos) {
+            System.out.println("Pedidos encerrados: " + (pedido.isFinalizado() == false ? "Ainda não há pedidos encerrados" : pedidos.size()));
+            System.out.println("Pedidos em atendimento: " + (pedido.isFinalizado() == true ? "Ainda não há pedidos em atendimento\n" : pedidos.size() + "\n"));
+            break;
         }
     }
 
@@ -179,22 +189,17 @@ public class Func {
                 escreveArq.write("\t\t================\n");
                 escreveArq.write("Nome do Cliente: " + pedido.getCliente().getNome() + "\n");
                 escreveArq.write("Endereços:\n");
-
                 for (Endereco endereco : pedido.getCliente().getEndereco()) {
                     escreveArq.write("- Rua: " + endereco.getRua() + ", Número: " + endereco.getNumero() + "\n");
                 }
-
                 LocalDateTime dataHoraAtual = LocalDateTime.now();
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
                 String dataHoraFormatada = dataHoraAtual.format(formatter);
-
-                escreveArq.write("Pedido finalizado no horario: " + dataHoraFormatada + "\n");
+                escreveArq.write("Pedido finalizado no dia/horario: " + dataHoraFormatada + "\n");
                 escreveArq.write("Produtos:\n");
-
                 for (Produto produto : pedido.getProduto()) {
                     escreveArq.write("\n- Nome: " + produto.getNome() + ", Quantidade: " + produto.getQuantidade() + ", Preço: " + produto.getPreco() + "\n");
                 }
-
                 escreveArq.close();
                 System.out.println("Recibo gerado com sucesso!");
             } catch (IOException e) {
