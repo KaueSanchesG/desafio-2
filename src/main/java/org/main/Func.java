@@ -1,5 +1,9 @@
 package org.main;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -99,6 +103,8 @@ public class Func {
                             System.out.println("Esse nome não está registrado...");
                         }
                     }
+                } else {
+                    System.out.println("Cadastre um cliente primeiro");
                 }
             }
         }
@@ -118,6 +124,8 @@ public class Func {
                 if (cliente.getNome().equals(nomeCliente)) {
                     clienteSelecionado = cliente;
                     break;
+                } else {
+                    System.out.println("Esse cliente não existe...");
                 }
             }
 
@@ -127,7 +135,7 @@ public class Func {
                 List<Produto> produtoList = new ArrayList<>();
                 for (int i = 0; i < qntd; i++) {
                     System.out.println("Digite o nome do " + (i + 1) + "° produto:");
-                    String nome = sc.nextLine();
+                    String nome = sc.next();
                     System.out.println("Digite a quantidade do " + (i + 1) + "° produto:");
                     int qntdProd = sc.nextInt();
                     System.out.println("O preço do " + (i + 1) + "° produto:");
@@ -138,14 +146,11 @@ public class Func {
                 System.out.println("O pedido foi finalizado?\n\t1 para sim\n\t2 para não\n");
                 boolean finalizado = sc.nextInt() == 1 ? true : false;
                 pedidos.add(new Pedido(produtoList, clienteSelecionado, finalizado));
-            } else {
-                System.out.println("Esse cliente não existe...");
             }
         } else if (opc == 2) {
             visualizarPedidos(pedidos);
         }
     }
-
 
     public static void visualizarPedidos(List<Pedido> pedidos) {
         if (pedidos.isEmpty()) {
@@ -157,9 +162,43 @@ public class Func {
                 System.out.println("Pedido finalizado: " + (pedido.isFinalizado() ? "Sim" : "Não"));
                 System.out.println("Produtos:");
                 for (Produto produto : pedido.getProduto()) {
-                    System.out.println("- Nome: " + produto.getNome() + ", Quantidade: " + produto.getQuantidade() + ", Preço: " + produto.getPreco());
+                    System.out.println("- Nome: " + produto.getNome() + "\n Quantidade: " + produto.getQuantidade() + "\n Preço: " + produto.getPreco());
                 }
                 System.out.println("-----------------------------------------");
+            }
+        }
+    }
+
+    public static void reciboTxt(Pedido pedido) {
+        if (pedido.isFinalizado()) {
+            try {
+                String nomeArq = "recibo_" + pedido.getCliente().getNome() + ".txt";
+                FileWriter escreveArq = new FileWriter(nomeArq);
+                escreveArq.write("\t\t================\n");
+                escreveArq.write("\t\tRecibo do Pedido\n");
+                escreveArq.write("\t\t================\n");
+                escreveArq.write("Nome do Cliente: " + pedido.getCliente().getNome() + "\n");
+                escreveArq.write("Endereços:\n");
+
+                for (Endereco endereco : pedido.getCliente().getEndereco()) {
+                    escreveArq.write("- Rua: " + endereco.getRua() + ", Número: " + endereco.getNumero() + "\n");
+                }
+
+                LocalDateTime dataHoraAtual = LocalDateTime.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                String dataHoraFormatada = dataHoraAtual.format(formatter);
+
+                escreveArq.write("Pedido finalizado no horario: " + dataHoraFormatada + "\n");
+                escreveArq.write("Produtos:\n");
+
+                for (Produto produto : pedido.getProduto()) {
+                    escreveArq.write("\n- Nome: " + produto.getNome() + ", Quantidade: " + produto.getQuantidade() + ", Preço: " + produto.getPreco() + "\n");
+                }
+
+                escreveArq.close();
+                System.out.println("Recibo gerado com sucesso!");
+            } catch (IOException e) {
+                System.out.println("Problema ao gerar o recibo: " + e.getMessage());
             }
         }
     }

@@ -10,6 +10,9 @@ public class Main {
         int opc;
         do {
             opc = Func.menu(clientes, pedidos);
+            for (Pedido pedido : pedidos) {
+                Func.reciboTxt(pedido);
+            }
         } while (opc < 3);
     }
 }
