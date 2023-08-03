@@ -28,7 +28,7 @@ public class Func {
 
     public static void menuCliente(List<Cliente> clienteList) {
         int opc;
-        System.out.println("<---------- Cliente ---------->");
+        System.out.println("------- Cliente --------");
         System.out.print("1 - Cadastrar \n2 - Procurar \n3 - Editar\n");
         opc = sc.nextInt();
         switch (opc) {
@@ -66,7 +66,7 @@ public class Func {
                                 System.out.println("- Rua: " + endereco.getRua() + ", Número: " + endereco.getNumero() + "\n");
                             }
                         } else {
-                            System.out.println("Esse cliente não existe...");
+                            System.out.println("Esse cliente não existe... :(");
                             break;
                         }
                     }
@@ -84,7 +84,7 @@ public class Func {
                             System.out.println("1 - Nome do cliente\n2 - Endereço do cliente");
                             int opc2 = sc.nextInt();
                             if (opc2 == 1) {
-                                System.out.println("Digite o novo nome:");
+                                System.out.println("Digite o novo nome: ");
                                 clienteList.get(i).setNome(sc.next());
                             }
                             if (opc2 == 2) {
